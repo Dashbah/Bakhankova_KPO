@@ -1,7 +1,6 @@
 public class Main {
     public static void main(String[] args) {
         var list = new IntegerList();
-        System.out.println("Hello world!");
         list.add(1);
         list.add(2);
         list.add(3);
