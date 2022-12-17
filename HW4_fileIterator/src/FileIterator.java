@@ -2,8 +2,9 @@ import java.io.BufferedReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.io.*;
+import java.util.NoSuchElementException;
 
-class FileIterator implements Iterator<String> {
+class FileIterator implements Iterator<String> , AutoCloseable{
     private final BufferedReader reader;
 
     /**
@@ -29,16 +30,25 @@ class FileIterator implements Iterator<String> {
         try {
             return reader.ready();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
     @Override
     public String next() {
         try {
-            return reader.readLine();
+            var str = reader.readLine();
+            if (str == null) {
+                throw new NoSuchElementException();
+            }
+            return str;
         } catch (IOException e) {
-            return null;
+            throw new UncheckedIOException(e);
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+        reader.close();
     }
 }
